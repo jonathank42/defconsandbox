@@ -10,7 +10,7 @@ spec:
   tls:
   - hosts:
     - jackett.defconsandbox.com
-    secretName: jackett-tls
+    secretName: wildcard-prod
   rules:
   - host: jackett.defconsandbox.com
     http:
