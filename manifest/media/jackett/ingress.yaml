@@ -9,7 +9,7 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "*.defconsandbox.com"
+    - jackett.defconsandbox.com
     secretName: wildcard-prod
   rules:
   - host: jackett.defconsandbox.com
