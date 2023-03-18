@@ -45,7 +45,7 @@ spec:
     app: jackett
   ports:
   - protocol: TCP
-    port: 80
+    port: 443
     targetPort: 9117
   type: LoadBalancer
   loadBalancerIP: 10.1.50.111
