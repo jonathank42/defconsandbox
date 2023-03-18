@@ -4,13 +4,13 @@ metadata:
   name: jackett
   namespace: media
   annotations:
-#    nginx.ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/issuer: "letsencrypt-prod"
 spec:
-   tls:
-   - hosts:
-     - jackett.defconsandbox.com
+  tls:
+  - hosts:
+    - jackett.defconsandbox.com
+    secretName: jackett-tls
   rules:
   - host: jackett.defconsandbox.com
     http:
