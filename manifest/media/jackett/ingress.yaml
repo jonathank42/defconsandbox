@@ -8,6 +8,9 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/issuer: "letsencrypt-prod"
 spec:
+   tls:
+   - hosts:
+     - jackett.defconsandbox.com
   rules:
   - host: jackett.defconsandbox.com
     http:
