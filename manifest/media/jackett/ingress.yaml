@@ -17,4 +17,4 @@ spec:
           service:  
             name: jackett-service
             port:
-              number: 80
+              number: 443
