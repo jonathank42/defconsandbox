@@ -1,0 +1,62 @@
+---
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: sabnzbd-deployment
+   namespace: media
+   labels:
+     app: sabnzbd
+ spec:
+   replicas: 1
+   strategy:
+         type: RollingUpdate
+         rollingUpdate:
+            maxSurge: 1
+   selector:
+      matchLabels:
+        app: sabnzbd
+   template:
+     metadata:
+       labels:
+         app: sabnzbd
+
+     spec:
+      containers:
+         - name: sabnzbd
+           image: linuxserver/sabnzbd
+           imagePullPolicy: Always
+           ports:
+             - containerPort: 8080
+           volumeMounts:
+             - name: sabnzbd-config
+               mountPath: /config
+             - name: sabnzbd-downloads
+               mountPath: /downloads
+      volumes:
+        - name: sabnzbd-config
+          persistentVolumeClaim:
+            claimName: pvc-sab
+        - name: sabnzbd-downloads
+          nfs:
+             server: 10.1.20.2
+             path: /volume1/tor
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sabnzbd-service
+spec:
+  selector:
+    app: sabnzbd
+  ports:
+  - name: webadmin
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - name: other
+    protocol: TCP
+    port: 9090
+    targetPort: 9090
+  type: LoadBalancer
+  loadBalancerIP: 10.1.50.114

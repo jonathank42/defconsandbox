@@ -1,0 +1,51 @@
+---
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: jackett-deployment
+   namespace: media
+   labels:
+     app: jackett
+ spec:
+   replicas: 1
+   strategy:
+         type: RollingUpdate
+         rollingUpdate:
+            maxSurge: 1
+   selector:
+      matchLabels:
+        app: jackett
+   template:
+     metadata:
+       labels:
+         app: jackett
+
+     spec:
+      containers:
+         - name: jackett
+           image: linuxserver/jackett
+           imagePullPolicy: Always
+           ports:
+             - containerPort: 9117
+           volumeMounts:
+             - name: jackett-config
+               mountPath: /config
+      volumes:
+        - name: jackett-config
+          persistentVolumeClaim:
+             claimName: pvc-jackett
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: jackett-service
+spec:
+  selector:
+    app: jackett
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9117
+  type: LoadBalancer
+  loadBalancerIP: 10.1.50.111

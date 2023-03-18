@@ -1,0 +1,66 @@
+---
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: sonarr-deployment
+   namespace: media
+   labels:
+     app: sonarr
+ spec:
+   replicas: 1
+   strategy:
+         type: RollingUpdate
+         rollingUpdate:
+            maxSurge: 1
+   selector:
+      matchLabels:
+        app: sonarr
+   template:
+     metadata:
+       labels:
+         app: sonarr
+
+     spec:
+      containers:
+         - name: sonarr
+           image: ghcr.io/linuxserver/sonarr
+           imagePullPolicy: Always
+           ports:
+             - containerPort: 8989
+           volumeMounts:
+             - name: sonarrconf
+               mountPath: /config
+             - name: tv
+               mountPath: /tv
+             - name: downloads
+               mountPath: /downloads
+      volumes:
+         - name: sonarrconf
+           persistentVolumeClaim:
+             claimName: pvc-sonarr
+         - name: tv
+           nfs:
+             server: 10.1.20.2
+             path: /volume1/TV
+         - name: downloads
+           nfs:
+             server: 10.1.20.2
+             path: /volume1/tor
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sonarr-service
+  labels:
+    app: sonarr
+    kubernetes.io/name: "sonarr"
+spec:
+  selector:
+    app: sonarr
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8989
+  type: LoadBalancer
+  loadBalancerIP: 10.1.50.110

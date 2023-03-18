@@ -1,0 +1,67 @@
+---
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: radarr-deployment
+   namespace: media
+   labels:
+     app: radarr
+ spec:
+   replicas: 1
+   strategy:
+         type: RollingUpdate
+         rollingUpdate:
+            maxSurge: 1
+   selector:
+      matchLabels:
+        app: radarr
+   template:
+     metadata:
+       labels:
+         app: radarr
+
+     spec:
+      containers:
+         - name: radarr
+           image: linuxserver/radarr
+           imagePullPolicy: Always
+           ports:
+             - containerPort: 7878
+           volumeMounts:
+             - name: radarr-config
+               mountPath: /config
+             - name: movies
+               mountPath: /movies
+             - name: downloads
+               mountPath: /downloads
+      volumes:
+         - name: radarr-config
+           persistentVolumeClaim:
+             claimName: pvc-radarr-new
+         - name: movies
+           nfs:
+             server: 10.1.20.2
+             path: /volume1/Movies
+         - name: downloads
+           nfs:
+             server: 10.1.20.2
+             path: /volume1/tor
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: radarr-service
+  labels:
+    app: radarr
+    kubernetes.io/name: "radarr"
+spec:
+  selector:
+    app: radarr
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 7878
+  type: LoadBalancer
+  loadBalancerIP: 10.1.50.113

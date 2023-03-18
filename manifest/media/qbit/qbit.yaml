@@ -1,0 +1,58 @@
+---
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: qbittorrent-deployment
+   namespace: media
+   labels:
+     app: qbittorrent
+ spec:
+   replicas: 1
+   strategy:
+         type: RollingUpdate
+         rollingUpdate:
+            maxSurge: 1
+   selector:
+      matchLabels:
+        app: qbittorrent
+   template:
+     metadata:
+       labels:
+         app: qbittorrent
+
+     spec:
+      containers:
+         - name: qbittorrent
+           image: linuxserver/qbittorrent
+           imagePullPolicy: Always
+           ports:
+             - containerPort: 8080
+           volumeMounts:
+             - name: qbittorrent-config
+               mountPath: /config
+             - name: qbittorrent-downloads
+               mountPath: /downloads
+      volumes:
+        - name: qbittorrent-config
+          persistentVolumeClaim:
+            claimName: pvc-qbit
+        - name: qbittorrent-downloads
+          nfs:
+             server: 10.1.20.2
+             path: /volume1/tor
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: qbittorrent-service
+spec:
+  selector:
+    app: qbittorrent
+  ports:
+  - name: webadmin
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
+  loadBalancerIP: 10.1.50.112

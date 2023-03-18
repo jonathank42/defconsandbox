@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qbit
+  namespace: media
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: qbit.defconsandbox.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:  
+            name: qbittorrent-service
+            port:
+              number: 80
