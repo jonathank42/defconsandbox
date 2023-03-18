@@ -9,7 +9,7 @@ metadata:
 spec:
   tls:
   - hosts:
-    - jackett.defconsandbox.com
+    - *.defconsandbox.com
     secretName: wildcard-prod
   rules:
   - host: jackett.defconsandbox.com
@@ -21,4 +21,4 @@ spec:
           service:  
             name: jackett-service
             port:
-              number: 443
+              number: 80
