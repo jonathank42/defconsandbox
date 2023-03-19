@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-prod
+  namespace : media
+spec:
+  secretName: wildcard-prod
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: '*.defconsandbox.com'
+  dnsNames:
+  - "*.defconsandbox.com"
