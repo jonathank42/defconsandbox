@@ -4,7 +4,7 @@ metadata:
   name: pvc-radarr-new
   namespace: media
 spec:
-  storageClassName: "radarr"
+  storageClassName: "longhorn"
   accessModes:
     - ReadWriteOnce
   resources:

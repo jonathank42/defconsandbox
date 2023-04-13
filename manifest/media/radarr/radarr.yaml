@@ -53,6 +53,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: radarr-service
+  namespace: media
   labels:
     app: radarr
     kubernetes.io/name: "radarr"
